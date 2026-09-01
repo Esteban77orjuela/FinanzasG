@@ -9,11 +9,11 @@ Plan de iteraciones. El estado de cada item se actualiza en la bitácora.
 - [x] Proyecto desplegado y operativo en Vercel (referencia histórica).
 
 ## Iteración 1 — Calidad: pruebas de la lógica financiera
-- [ ] Configurar framework de pruebas (Vitest) sin afectar producción.
-- [ ] Tests de `getTransactionsForMonth` (fijos, esporádicos, rangos de fechas).
-- [ ] Tests de `calculateSummary` (balance, redondeo).
-- [ ] Tests de `formatCurrency` / utilitarios de mes.
-- [ ] Confirmar ciertos criterios de aceptación (CA-01 a CA-05).
+- [x] Configurar framework de pruebas (Vitest).
+- [x] Tests de `getTransactionsForMonth` (fijos, esporádicos, rangos de fechas).
+- [x] Tests de `calculateSummary` (balance, casos mixtos, vacío).
+- [x] Tests de `formatCurrency` / utilitarios de mes.
+- [x] Confirmar ciertos criterios de aceptación (CA-01 a CA-05).
 
 ## Iteración 2 — Seguridad
 - [ ] Revisión de RLS: verificar que insert/update no permitan tomar `user_id` ajeno.

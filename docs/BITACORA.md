@@ -4,6 +4,33 @@ Registro cronológico de cambios. Cada entrada: fecha, objetivo, problema, decis
 
 ---
 
+## 2026-09-01 — Iteración 1: Pruebas de la lógica financiera
+
+**Objetivo:** cubrir con pruebas unitarias la lógica que define qué transacciones aplican a cada mes y el cálculo del balance, que es el núcleo del valor del producto.
+
+**Contexto:** la app ya está en producción. Hasta ahora la lógica financiera no tenía ninguna prueba automática; un error silencioso en `getTransactionsForMonth` o `calculateSummary` podría mostrar balances incorrectos a un usuario real.
+
+**Decisión tomada:** usar **Vitest** (framework de pruebas para TypeScript, rápido y con configuración mínima). No requiere navegador: corre funciones puras directamente.
+
+**Implementación:**
+- `package.json` — scripts `test` (`vitest run`) y `test:watch`.
+- `vitest.config.mts` — configuración: ambiente Node, alias `@` → raíz, inclusión de `*.test.ts`.
+- `lib/utils.test.ts` — 22 pruebas: fijos (inicio, meses posteriores, corte por `end_date`, límites de año), esporádicos (solo su mes), casos combinados, resumen (ingresos/gastos/balance, vacíos), formato COP y utilidades de mes.
+
+**Archivos afectados:** `package.json`, `package-lock.json`, `vitest.config.mts`, `lib/utils.test.ts`, `docs/ROADMAP.md`.
+
+**Pruebas realizadas:** `npm test` → **22/22 passed** en ~1s. Confirmados de forma automatizada los criterios de aceptación CA-01 a CA-05 (ver REQUISITOS.md).
+
+**Resultado:** la lógica financiera critica queda cubierta por pruebas. El warning de Vite sobre formato ESM/CJS se eliminó usando extensión `.mts`.
+
+**Pendientes:**
+- Iteración 2 — seguridad: revisión RLS, `npm audit`, verificación de secretos en historial.
+- Verificar en la app de producción que no hubo impacto funcional (los cambios fueron solo de testing).
+
+**Siguiente paso:** Iteración 2 — Seguridad (revisión OWASP + RLS + `npm audit`).
+
+---
+
 ## 2026-09-01 — Iteración 0: Base profesional documental
 
 **Objetivo:** profesionalizar la documentación del proyecto y el repositorio.
