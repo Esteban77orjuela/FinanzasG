@@ -77,16 +77,14 @@ export default function CategoriesPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setError('Sesión expirada'); setSaving(false); return }
 
-    const payload = { user_id: user.id, name: name.trim(), type, color, icon }
-
     let err
     if (editCat) {
       // @ts-ignore
-      const res = await supabase.from('categories').update(payload as any).eq('id', editCat.id)
+      const res = await supabase.from('categories').update({ name: name.trim(), type, color, icon }).eq('id', editCat.id)
       err = res.error
     } else {
       // @ts-ignore
-      const res = await supabase.from('categories').insert(payload as any)
+      const res = await supabase.from('categories').insert({ user_id: user.id, name: name.trim(), type, color, icon })
       err = res.error
     }
 

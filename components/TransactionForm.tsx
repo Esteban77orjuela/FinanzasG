@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import type { Category, Transaction } from '@/lib/types/database'
 import { supabase } from '@/lib/supabase/client'
-import { getMonthKey } from '@/lib/utils'
 
 interface TransactionFormProps {
   categories: Category[]
@@ -60,38 +59,45 @@ export default function TransactionForm({
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setError('Sesión expirada. Por favor ingresa de nuevo.'); setLoading(false); return }
 
-    const payload = {
-      user_id: user.id,
-      description: description.trim(),
-      amount: amountNum,
-      type,
-      category_id: categoryId || null,
-      is_fixed: isFixed,
-      start_date: startDate,
-      end_date: null as string | null,
-    }
-
-    let err
     if (isEditing && editTransaction) {
-      const res = await supabase
+      const updatePayload = {
+        description: description.trim(),
+        amount: amountNum,
+        type,
+        category_id: categoryId || null,
+        is_fixed: isFixed,
+        start_date: startDate,
+        end_date: null as string | null,
+      }
+      // @ts-ignore — Supabase types mismatch with update payloads
+      const { error } = await supabase
         .from('transactions')
         // @ts-ignore
-        .update(payload as any)
+        .update(updatePayload)
         .eq('id', editTransaction.id)
-      err = res.error
+      if (error) setError(error.message)
+      else { onSaved(); onClose() }
     } else {
-      // @ts-ignore
-      const res = await supabase.from('transactions').insert(payload as any)
-      err = res.error
+      const insertPayload = {
+        user_id: user.id,
+        description: description.trim(),
+        amount: amountNum,
+        type,
+        category_id: categoryId || null,
+        is_fixed: isFixed,
+        start_date: startDate,
+        end_date: null as string | null,
+      }
+      // @ts-ignore — Supabase types mismatch with insert payloads
+      const { error } = await supabase
+        .from('transactions')
+        // @ts-ignore
+        .insert(insertPayload)
+      if (error) setError(error.message)
+      else { onSaved(); onClose() }
     }
 
     setLoading(false)
-    if (err) {
-      setError(err.message)
-    } else {
-      onSaved()
-      onClose()
-    }
   }
 
   return (
