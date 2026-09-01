@@ -16,9 +16,12 @@ Plan de iteraciones. El estado de cada item se actualiza en la bitácora.
 - [x] Confirmar ciertos criterios de aceptación (CA-01 a CA-05).
 
 ## Iteración 2 — Seguridad
-- [ ] Revisión de RLS: verificar que insert/update no permitan tomar `user_id` ajeno.
-- [ ] Revisión OWASP básica (XSS, headers, dependencias con vulnerabilidades: `npm audit`).
-- [ ] Verificar que no existan secretos en el historial de Git.
+- [x] Revisión de RLS: políticas reforzadas para impedir que un cliente altere `user_id` (INSERT y UPDATE).
+- [x] Revisión OWASP básica: headers de seguridad ampliados (Referrer-Policy, Permissions-Policy).
+- [x] Verificación de ausencia de XSS (sin `dangerouslySetInnerHTML`/`innerHTML`/`eval`).
+- [x] `npm audit`: 0 vulnerabilidades.
+- [x] Verificación de secretos: ninguno versionado; `.env.local.example` corregido a placeholders.
+- [ ] Pendiente: aplicar en Supabase (SQL Editor) las políticas RLS reforzadas del `migration.sql`.
 
 ## Iteración 3 — Validación de UX en producción
 - [ ] QA manual con criterios de aceptación (CA-01 a CA-06).

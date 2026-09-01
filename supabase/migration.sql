@@ -56,12 +56,12 @@ CREATE POLICY "Users can read own categories"
 
 CREATE POLICY "Users can insert own categories"
   ON public.categories FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
+  WITH CHECK (auth.uid() = user_id AND user_id = (SELECT auth.uid()));
 
 CREATE POLICY "Users can update own categories"
   ON public.categories FOR UPDATE
   USING (auth.uid() = user_id)
-  WITH CHECK (auth.uid() = user_id);
+  WITH CHECK (auth.uid() = user_id AND user_id = (SELECT auth.uid()));
 
 CREATE POLICY "Users can delete own categories"
   ON public.categories FOR DELETE
@@ -74,12 +74,12 @@ CREATE POLICY "Users can read own transactions"
 
 CREATE POLICY "Users can insert own transactions"
   ON public.transactions FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
+  WITH CHECK (auth.uid() = user_id AND user_id = (SELECT auth.uid()));
 
 CREATE POLICY "Users can update own transactions"
   ON public.transactions FOR UPDATE
   USING (auth.uid() = user_id)
-  WITH CHECK (auth.uid() = user_id);
+  WITH CHECK (auth.uid() = user_id AND user_id = (SELECT auth.uid()));
 
 CREATE POLICY "Users can delete own transactions"
   ON public.transactions FOR DELETE

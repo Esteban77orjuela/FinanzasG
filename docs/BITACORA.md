@@ -4,6 +4,34 @@ Registro cronológico de cambios. Cada entrada: fecha, objetivo, problema, decis
 
 ---
 
+## 2026-09-01 — Iteración 2: Seguridad
+
+**Objetivo:** endurecer la seguridad del proyecto siguiendo una revisión OWASP básica y validar que no existan secretos ni vulnerabilidades conocidas.
+
+**Contexto:** la lógica financiera ya estaba probada (Iteración 1). La seguridad es crítica porque la app está en producción con datos reales de usuarios.
+
+**Hallazgos y decisiones:**
+- **Secretos:** `.env.local` (credenciales reales) está correctamente ignorado y nunca se versionó. Pero `.env.local.example` contenía una **anon key real** hardcodeada → **corregido** a placeholder (`tu-anon-key-publica`). Revisión completa: ninguna clave real existe en archivos versionados.
+- **RLS:** las políticas `INSERT`/`UPDATE` permitían a un cliente alterar el `user_id` de una fila a un valor ajeno → **reforzadas** con `AND user_id = (SELECT auth.uid())` en las 4 políticas (categories y transactions, INSERT y UPDATE).
+- **Headers OWASP:** se agregaron `Referrer-Policy` y `Permissions-Policy` (bloqueo de cámara/micrófono/geolocalización) a `next.config.ts`.
+- **XSS:** no se usa `dangerouslySetInnerHTML`, `innerHTML` ni `eval()`. React escapa por defecto.
+- **Dependencias:** `npm audit` → **0 vulnerabilidades**.
+- **Middleware:** control de acceso correcto y sin cambios necesarios.
+
+**Archivos afectados:** `supabase/migration.sql`, `next.config.ts`, `.env.local.example`, `docs/ROADMAP.md`.
+
+**Pruebas realizadas:** `npm audit` (0 vuln), grep de secretos en el repositorio (ninguno), revisión manual de headers y componentes.
+
+**Resultado:** proyecto endurecido en seguridad. La regla de oro aplicada: *"La seguridad no se decide en el frontend; la base es la última barrera."*
+
+**Pendientes:**
+- Aplicar en Supabase (SQL Editor) las políticas RLS reforzadas del `migration.sql` (la base en producción aún tiene las políticas antiguas).
+- Evaluar la implementación de un CSP (Content-Security-Policy) equilibrado sin romper estilos inline ni el fetch a Supabase (mejora futura).
+
+**Siguiente paso:** Iteración 3 — Validación de UX/QA en producción con criterios de aceptación (CA-01 a CA-06).
+
+---
+
 ## 2026-09-01 — Iteración 1: Pruebas de la lógica financiera
 
 **Objetivo:** cubrir con pruebas unitarias la lógica que define qué transacciones aplican a cada mes y el cálculo del balance, que es el núcleo del valor del producto.
