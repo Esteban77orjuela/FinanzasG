@@ -1,17 +1,6 @@
 import type { NextConfig } from 'next'
 
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development',
-  buildExcludes: [/middleware-manifest\.json$/],
-})
-
 const nextConfig: NextConfig = {
-  // Turbopack vacío para silenciar el error de webpack config de next-pwa
-  turbopack: {},
-  experimental: {},
   // Headers de seguridad
   async headers() {
     return [
@@ -27,4 +16,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-module.exports = withPWA(nextConfig)
+module.exports = nextConfig
