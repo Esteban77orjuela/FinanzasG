@@ -2,7 +2,23 @@
 
 PWA de finanzas personales. Registra gastos e ingresos, controla tu balance mes a mes.
 
-**Stack:** Next.js 15 · Supabase (PostgreSQL + Auth) · Vercel
+**Stack:** Next.js 16 · React 19 · TypeScript · Supabase (PostgreSQL + Auth) · Vercel
+
+---
+
+## 📖 Documentación
+
+El proyecto mantiene documentación profesional y trazable en `docs/`:
+
+| Documento | Contenido |
+|---|---|
+| [Visión](docs/VISION.md) | Idea general y particular del producto |
+| [Requisitos](docs/REQUISITOS.md) | Funcionales, no funcionales, historias, backlog |
+| [Arquitectura](docs/ARQUITECTURA.md) | Pila, modelo de datos, seguridad, decisiones |
+| [Metodología](docs/METODOLOGIA.md) | Cómo se trabaja y se decide |
+| [Roadmap](docs/ROADMAP.md) | Plan de iteraciones |
+| [Bitácora](docs/BITACORA.md) | Historial de cambios del proyecto |
+| [Aprendizaje](docs/APRENDIZAJE.md) | Guía de estudio del proyecto |
 
 ---
 
@@ -36,19 +52,21 @@ npm run dev
 
 Abre [http://localhost:3000](http://localhost:3000)
 
+> Nota: el archivo `.npmrc` (`legacy-peer-deps=true`) evita conflictos de peer dependencies de la pila actual.
+
 ---
 
 ## ☁️ Despliegue en Vercel
 
-1. Sube este proyecto a GitHub (o GitLab)
-2. Ve a [vercel.com](https://vercel.com) y conecta tu cuenta GitHub
+1. Sube el proyecto a GitHub (o GitLab)
+2. Ve a [vercel.com](https://vercel.com) y conecta la cuenta de GitHub
 3. Importa el repositorio `FinanzasG`
 4. En **Environment Variables** agrega:
    - `NEXT_PUBLIC_SUPABASE_URL` = tu URL de Supabase
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = tu anon key
-5. Haz clic en **Deploy**
+5. Click en **Deploy**
 
-Vercel detecta Next.js automáticamente. No necesitas configuración adicional.
+Vercel detecta Next.js automáticamente y despliega desde la rama `main`.
 
 ---
 
@@ -65,33 +83,39 @@ Vercel detecta Next.js automáticamente. No necesitas configuración adicional.
 
 ---
 
-## 📦 Estructura del proyecto
+## 🏗️ Estructura del proyecto
 
 ```
-app/
-├── page.tsx              # Dashboard principal
-├── login/page.tsx        # Login
-├── register/page.tsx     # Registro
-├── transactions/page.tsx # Lista de movimientos
-├── categories/page.tsx   # Gestión de categorías
-├── manifest.ts           # PWA manifest
-└── globals.css           # Sistema de diseño
+app/                        Páginas y rutas
+├── page.tsx                Dashboard (resumen + movimientos por mes)
+├── login/page.tsx          Inicio de sesión
+├── register/page.tsx       Registro de cuenta
+├── transactions/page.tsx   Lista de movimientos
+├── categories/page.tsx     Gestión de categorías
+├── layout.tsx              Layout raíz (PWA, metadatos)
+└── globals.css             Sistema de diseño (dark mode)
 
-components/
-├── Navbar.tsx            # Barra de navegación
-├── TransactionForm.tsx   # Modal agregar/editar
-├── TransactionList.tsx   # Lista de transacciones
-├── SummaryCards.tsx      # Tarjetas de resumen
-└── MonthPicker.tsx       # Selector de mes
+components/                 Componentes de UI
+├── Navbar.tsx              Navegación superior e inferior
+├── TransactionForm.tsx     Modal agregar/editar movimiento
+├── TransactionList.tsx     Lista de transacciones
+├── SummaryCards.tsx        Tarjetas de resumen (ingresos/gastos/balance)
+├── MonthPicker.tsx         Selector y navegación de mes
+└── ServiceWorkerRegister.tsx Registro del service worker
 
 lib/
-├── supabase/client.ts    # Cliente Supabase (browser)
-├── supabase/server.ts    # Cliente Supabase (server)
-├── types/database.ts     # Tipos TypeScript
-└── utils.ts              # Funciones utilitarias
+├── supabase/client.ts      Cliente Supabase (navegador)
+├── supabase/server.ts      Cliente Supabase (servidor)
+├── types/database.ts       Tipos de la base de datos
+└── utils.ts                Lógica de negocio (mes, fijos, resumen, moneda)
+
+public/
+├── manifest.json           Manifest de la PWA
+├── sw.js                   Service worker (caché y offline)
+└── icons/                  Íconos de la app
 
 supabase/
-└── migration.sql         # SQL para crear tablas en Supabase
+└── migration.sql           SQL: tablas, índices y políticas de seguridad (RLS)
 ```
 
 ---
@@ -103,8 +127,9 @@ supabase/
 - ✅ Gastos **fijos** (aparecen automáticamente cada mes)
 - ✅ Gastos **esporádicos** (solo en el mes registrado)
 - ✅ Editar y eliminar movimientos
-- ✅ Navegar mes a mes
+- ✅ Navegar mes a mes (pasado y presente)
 - ✅ Tarjetas de resumen: ingresos, gastos, balance
 - ✅ Categorías personalizadas con colores e íconos
-- ✅ Instalable como PWA en Android e iOS
+- ✅ Instalable como PWA en Android e iOS, con navegación offline
 - ✅ Diseño premium dark mode, totalmente responsivo
+- ✅ Seguridad por fila en la base de datos (RLS)
