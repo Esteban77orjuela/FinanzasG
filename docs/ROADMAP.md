@@ -21,7 +21,12 @@ Plan de iteraciones. El estado de cada item se actualiza en la bitácora.
 - [x] Verificación de ausencia de XSS (sin `dangerouslySetInnerHTML`/`innerHTML`/`eval`).
 - [x] `npm audit`: 0 vulnerabilidades.
 - [x] Verificación de secretos: ninguno versionado; `.env.local.example` corregido a placeholders.
-- [ ] Pendiente: aplicar en Supabase (SQL Editor) las políticas RLS reforzadas del `migration.sql`.
+- [x] Aplicar en Supabase (SQL Editor) las políticas RLS reforzadas del `migration.sql`.
+
+## Iteración 3 — Validación de UX en producción
+- [x] QA manual con criterios de aceptación (CA-01 a CA-06).
+- [x] Verificar instalación PWA en dispositivo real.
+- [ ] Corregir bugs detectados en uso real (proyecto ya en producción).
 
 ## Iteración 3 — Validación de UX en producción
 - [ ] QA manual con criterios de aceptación (CA-01 a CA-06).

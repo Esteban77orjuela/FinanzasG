@@ -4,6 +4,33 @@ Registro cronológico de cambios. Cada entrada: fecha, objetivo, problema, decis
 
 ---
 
+## 2026-09-02 — Iteración 3: QA en producción (criterios de aceptación)
+
+**Objetivo:** validar en el entorno real (Vercel) que cada funcionalidad cumple los criterios de aceptación definidos.
+
+**Criterios probados (resultado):**
+
+| CA | Descripción | Resultado |
+|---|---|---|
+| CA-01 | Gasto fijo con fecha de inicio → aparece en ese mes y todos los siguientes | ✅ Pass — creado con fecha agosto, aparece en agosto Y septiembre |
+| CA-02 | Gasto esporádico → solo su mes | ✅ Pass — creado, no aparece en meses diferentes |
+| CA-03 | Editar fijo → refleja cambio en todos los meses | ✅ Pass |
+| CA-04 | Eliminar fijo → desaparece de futuros meses | ✅ Pass |
+| CA-05 | Balance = ingresos − gastos sin error de redondeo | ✅ Pass — 4.650.000 − 505.000 = 4.145.000 (COP verificado) |
+| CA-06 | Sin sesión → redirige a login; cerrar sesión → redirige a login | ✅ Pass — las tres rutas redirigen correctamente |
+
+**PWA en dispositivo real:**
+- ✅ Instalable en celular — aparece como app con icono propio.
+- ✅ App shell se carga sin errores visibles.
+
+**Herramientas de QA utilizadas:** browser en modo incógnito (rutas protegidas), navegador de producción (https://finanzas-g-one.vercel.app), dispositivo móvil.
+
+**Resultado:** la app cumple todos los criterios de aceptación. Sin errores visibles al momento de la prueba.
+
+**Siguiente paso:** Iteración 4 — funcionalidades nuevas (presupuestos, exportación, u otra según prioridad).
+
+---
+
 ## 2026-09-01 — Iteración 2: Seguridad
 
 **Objetivo:** endurecer la seguridad del proyecto siguiendo una revisión OWASP básica y validar que no existan secretos ni vulnerabilidades conocidas.
