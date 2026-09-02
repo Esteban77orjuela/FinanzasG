@@ -37,7 +37,8 @@ Plan de iteraciones. El estado de cada item se actualiza en la bitácora.
 - [x] Validación: fecha de fin posterior a la de inicio; vacío = indefinido.
 - [x] Envío correcto de `end_date` en insert y update.
 - [x] Indicador visual "fin" en el badge de gastos fijos con fecha de fin.
-- [ ] Verificar en producción.
+- [x] Desplegado en producción (commit 1f09c6c).
+- [x] Verificar la funcionalidad en producción (QA).
 
 ## Iteración 4+ — Funcionalidades futuras (pendientes de priorizar)
 - [ ] Presupuesto por categoría.

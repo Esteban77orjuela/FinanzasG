@@ -154,13 +154,38 @@ Usuario (celular) → PWA en el navegador → Next.js la sirve → Supabase guar
                Service Worker (copia sin red)
 ```
 
+## 3.1 Formulario: fecha de fin de un gasto fijo
+
+**QUÉ:** campo "Hasta (opcional)" que aparece solo cuando marcas un gasto como fijo.
+
+**PARA QUÉ:** decirle a un gasto fijo "deja de aparecer a partir de tal mes" sin eliminarlo.
+
+**POR QUÉ:** un gasto fijo puede ser temporal (una suscripción que vence). Antes, sin esto, solo podías eliminarlo. Ya existía el campo `end_date` en la base de datos — solo faltaba exponerlo en la interfaz.
+
+**CÓMO:**
+- estado `endDate` en `TransactionForm`.
+- visible solo si `isFixed` está activo (`{isFixed && (...)}`).
+- validación: si `endDate < startDate` → error y no guarda.
+- si está vacío o no es fijo → se guarda `null` (= infinito).
+
+**DÓNDE:** `components/TransactionForm.tsx` (estado + campo + validación + payload) y `components/TransactionList.tsx` (badge).
+
+**CÓMO SE CONECTA:** el `end_date` que guardas alimenta `getTransactionsForMonth`: *"Fijo aplica si `start_date ≤ mes` Y (`end_date` vacío O `end_date ≥ mes`)."*
+
+**QUÉ PASA SI NO EXISTIERA:** un gasto temporal seguiría apareciendo meses de más hasta eliminarlo a mano.
+
+**REGLA:** *"`end_date` vacío = para siempre; `end_date` puesto = hasta ese mes."*
+
+---
+
 ## 4. Flujo de una transacción nueva (idea particular concreta)
 
 1. Usuario toca **+** → abre `TransactionForm`.
 2. Completa tipo, descripción, monto, categoría, fecha y marca **fijo** si aplica.
-3. Se envía a Supabase: `insert` en la tabla `transactions`.
-4. La app recarga datos → `getTransactionsForMonth` calcula a qué meses aplica.
-5. El dashboard muestra el resumen recalculado (`calculateSummary`).
+3. Si es fijo, puede ponerle "Hasta (opcional)" (fecha de fin).
+4. Se envía a Supabase: `insert` en la tabla `transactions`.
+5. La app recarga datos → `getTransactionsForMonth` calcula a qué meses aplica.
+6. El dashboard muestra el resumen recalculado (`calculateSummary`).
 
 ## 5. Reglas de oro para recordar
 
@@ -168,6 +193,7 @@ Usuario (celular) → PWA en el navegador → Next.js la sirve → Supabase guar
 |---|---|
 | La seguridad no se decide en el frontend | "El frontend miente; la base manda." |
 | Fijo vs esporádico | "Fijo se repite, esporádico es de una noche." |
+| Fecha de fin de un fijo | "`end_date` vacío = para siempre; puesto = hasta ese mes." |
 | YAGNI | "No construyas lo que la idea general no pidió." |
 | Proporcionalidad | "Tan simple como sea posible, tan robusto como sea necesario." |
 | Evidencia antes que afirmar | "No digo que funciona hasta que lo pruebo." |

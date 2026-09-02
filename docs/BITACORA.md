@@ -4,6 +4,25 @@ Registro cronológico de cambios. Cada entrada: fecha, objetivo, problema, decis
 
 ---
 
+## 2026-09-02 — Iteración 4: Fecha de fin para gastos fijos (QA)
+
+**Objetivo:** validar en producción la nueva funcionalidad de fecha de fin de gastos fijos.
+
+**Verificado:**
+- La app siguió disponible en Vercel tras el deploy (sin downtime).
+- La nueva funcionalidad se probó de forma objetiva mediante los tests automatizados (`end_date` cubierto en `getTransactionsForMonth`) además de la validación del formulario.
+
+**Criterio probado (nuevo requisito RF-06b):**
+- Guarda un gasto fijo con fecha de fin → se persiste `end_date`.
+- La lógica `getTransactionsForMonth` no lo muestra en meses posteriores a su fin (cubierto por tests).
+- Badge "🔁 Fijo · fin" visible en la lista.
+
+**Resultado:** funcionalidad desplegada y documentada. Consistente con la idea general (gastos fijos aparecen mes a mes, ahora con límite opcional).
+
+**Siguiente paso:** priorizar la siguiente funcionalidad (presupuestos, exportación, búsqueda o modo claro).
+
+---
+
 ## 2026-09-02 — Iteración 4: Fecha de fin para gastos fijos
 
 **Objetivo:** permitir al usuario ponerle **fecha de fin** a un gasto fijo desde la interfaz (antes ese campo existía en la base de datos pero no era editable en la UI). Cierra una funcionalidad directamente relacionada con la idea original del producto.
