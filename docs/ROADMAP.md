@@ -32,10 +32,16 @@ Plan de iteraciones. El estado de cada item se actualiza en la bitácora.
 - [ ] QA manual con criterios de aceptación (CA-01 a CA-06).
 - [ ] Corregir bugs detectados en uso real (proyecto ya en producción).
 
+## Iteración 4 — Fechas de fin para gastos fijos
+- [x] Campo "Hasta (opcional)" en el formulario de transacciones (solo para fijos).
+- [x] Validación: fecha de fin posterior a la de inicio; vacío = indefinido.
+- [x] Envío correcto de `end_date` en insert y update.
+- [x] Indicador visual "fin" en el badge de gastos fijos con fecha de fin.
+- [ ] Verificar en producción.
+
 ## Iteración 4+ — Funcionalidades futuras (pendientes de priorizar)
 - [ ] Presupuesto por categoría.
 - [ ] Exportación de datos (CSV/Excel).
-- [ ] Fecha fin renovable para gastos fijos desde la UI.
 - [ ] Búsqueda/texto en movimientos.
 - [ ] Modo claro/oscuridad.
 

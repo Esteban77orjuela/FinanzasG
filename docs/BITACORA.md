@@ -4,6 +4,30 @@ Registro cronológico de cambios. Cada entrada: fecha, objetivo, problema, decis
 
 ---
 
+## 2026-09-02 — Iteración 4: Fecha de fin para gastos fijos
+
+**Objetivo:** permitir al usuario ponerle **fecha de fin** a un gasto fijo desde la interfaz (antes ese campo existía en la base de datos pero no era editable en la UI). Cierra una funcionalidad directamente relacionada con la idea original del producto.
+
+**Contexto:** un gasto fijo (ej: una suscripción que se cancela en 3 meses) no podía dejar de aparecer sin eliminar la transacción. Ahora el usuario puede indicar "hasta cuándo" se repite.
+
+**Implementación:**
+- `components/TransactionForm.tsx` — nuevo estado `endDate`; campo "Hasta (opcional)" visible solo si `isFixed`; validación de que no sea anterior a `startDate`; envío de `endDate` en insert y update (solo si es fijo y está definido).
+- `components/TransactionList.tsx` — badje "🔁 Fijo · fin" con tooltip de la fecha cuando un fijo tiene `end_date`.
+- `app/globals.css` — nueva clase `.form-hint` para texto de ayuda.
+
+**Archivos afectados:** `components/TransactionForm.tsx`, `components/TransactionList.tsx`, `app/globals.css`, `docs/REQUISITOS.md`, `docs/ROADMAP.md`.
+
+**Pruebas realizadas:** `npm test` (22/22 passed) y `npm run build` (compila correcto).
+
+**Resultado:** nuevo requisito RF-06b implementado y documentado.
+
+**Pendientes:**
+- Verificar la funcionalidad en producción (crear/editar un fijo con fecha de fin y confirmar que deja de aparecer tras esa fecha).
+
+**Siguiente paso:** verificación en producción de la Iteración 4; luego priorizar siguiente funcionalidad (presupuestos, exportación, búsqueda o modo claro).
+
+---
+
 ## 2026-09-02 — Iteración 3: QA en producción (criterios de aceptación)
 
 **Objetivo:** validar en el entorno real (Vercel) que cada funcionalidad cumple los criterios de aceptación definidos.

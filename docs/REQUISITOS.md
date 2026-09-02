@@ -10,6 +10,7 @@
 | RF-04 | El usuario puede **registrar una transacción** (ingreso o gasto) con descripción, monto, categoría, fecha y tipo fijo/esporádico. | Implementado |
 | RF-05 | Una transacción **fija** aparece **automáticamente en todos los meses** desde su fecha de inicio (de forma ilimitada). | Implementado |
 | RF-06 | Una transacción **esporádica** solo aparece en el **mes de su fecha**. | Implementado |
+| RF-06b | Un gasto fijo puede tener una **fecha de fin opcional**; al cumplirse deja de aparecer en meses posteriores. Si está vacía, se repite indefinidamente. | Implementado |
 | RF-07 | El usuario puede **editar y eliminar** cualquier transacción. | Implementado |
 | RF-08 | El dashboard muestra por mes: **total ingresos, total gastos y balance**. | Implementado |
 | RF-09 | El usuario puede **navegar entre meses** (pasado y presente; no futuro). | Implementado |

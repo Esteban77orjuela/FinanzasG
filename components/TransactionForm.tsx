@@ -40,6 +40,7 @@ export default function TransactionForm({
     const d = new Date(defaultYear, defaultMonth - 1, 1)
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
   })
+  const [endDate, setEndDate] = useState(editTransaction?.end_date || '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -54,6 +55,16 @@ export default function TransactionForm({
     if (!description.trim()) { setError('La descripción es requerida'); return }
     if (isNaN(amountNum) || amountNum <= 0) { setError('El monto debe ser un número válido mayor a 0'); return }
 
+    // validar fecha de fin: solo aplica a fijos y debe ser posterior al inicio
+    let finalEndDate: string | null = null
+    if (isFixed && endDate) {
+      if (endDate < startDate) {
+        setError('La fecha de fin no puede ser anterior a la fecha de inicio')
+        return
+      }
+      finalEndDate = endDate
+    }
+
     setLoading(true)
 
     const { data: { user } } = await supabase.auth.getUser()
@@ -67,7 +78,7 @@ export default function TransactionForm({
         category_id: categoryId || null,
         is_fixed: isFixed,
         start_date: startDate,
-        end_date: null as string | null,
+        end_date: finalEndDate,
       }
       // @ts-ignore — Supabase types mismatch with update payloads
       const { error } = await supabase
@@ -86,7 +97,7 @@ export default function TransactionForm({
         category_id: categoryId || null,
         is_fixed: isFixed,
         start_date: startDate,
-        end_date: null as string | null,
+        end_date: finalEndDate,
       }
       // @ts-ignore — Supabase types mismatch with insert payloads
       const { error } = await supabase
@@ -202,6 +213,26 @@ export default function TransactionForm({
                 required
               />
             </div>
+
+            {/* Fecha de fin (solo para fijos, opcional = indefinido) */}
+            {isFixed && (
+              <div className="form-group">
+                <label className="form-label" htmlFor="endDate">
+                  Hasta (opcional)
+                </label>
+                <input
+                  id="endDate"
+                  type="date"
+                  className="form-input"
+                  min={startDate}
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+                <p className="form-hint">
+                  Dejar vacío para que el gasto fijo se repita indefinidamente.
+                </p>
+              </div>
+            )}
 
             {/* Toggle gasto fijo */}
             <div className="toggle-group">

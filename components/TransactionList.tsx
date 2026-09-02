@@ -87,8 +87,8 @@ export default function TransactionList({
                   </span>
                 )}
                 {t.is_fixed && (
-                  <span className="transaction-item__fixed-badge">
-                    🔁 Fijo
+                  <span className="transaction-item__fixed-badge" title={t.end_date ? `Hasta ${t.end_date}` : 'Indefinido'}>
+                    🔁 Fijo{t.end_date ? ' · fin' : ''}
                   </span>
                 )}
               </div>
