@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase/client'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -24,6 +25,7 @@ export default function Navbar() {
             FinanzasG
           </Link>
           <div className="navbar__actions">
+            <ThemeToggle />
             <button
               onClick={handleLogout}
               className="btn btn--ghost btn--sm"

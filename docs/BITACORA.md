@@ -4,6 +4,40 @@ Registro cronológico de cambios. Cada entrada: fecha, objetivo, problema, decis
 
 ---
 
+## 2026-09-02 — Iteración 5: Modo claro y oscuro con toggle persistente
+
+**Objetivo:** agregar un modo claro además del oscuro, con un toggle que recuerde la preferencia del usuario y respete la del sistema la primera vez.
+
+**Contexto:** el roadmap preveía "Modo claro" como funcionalidad futura. El sistema de diseño ya usaba variables CSS en `:root`, lo que hizo el cambio limpio.
+
+**Implementación:**
+- `app/globals.css` — reestructuradas las variables de tema en `:root[data-theme='dark']` (por defecto) y `:root[data-theme='light']` (paleta clara). Se agregó `color-scheme: light/dark` para controles nativos. Se reemplazaron fondos hardcodeados de inputs y del skeleton por variables nuevas (`--bg-input`, `--skeleton-shimmer`) que se adaptan a cada tema.
+- `components/ThemeToggle.tsx` — botón con icono sol/luna en la navbar que alterna y persiste el tema en `localStorage`.
+- `components/ThemeInit.tsx` — usa `useServerInsertedHTML` para inyectar el script que aplica el tema antes de hidratar, **fuera del árbol de React** (evita parpadeo y el warning de React 19 de "script tag").
+- `app/layout.tsx` — integra `<ThemeInit />` en `<head>`.
+
+**Problema resuelto (hydration):**
+1. Primer intento con `next/script beforeInteractive` dentro de un client component → "Hydration failed" y "Encountered a script tag".
+2. La causa raíz es un comportamiento de React 19 / Next 16 que avisa de cualquier `<script>` dentro del árbol de React (afecta también a librerías oficiales como `next-themes`).
+3. **Solución definitiva:** `useServerInsertedHTML` (`next/navigation`) inyecta el script en el HTML del servidor sin que React lo "vea" en cliente. El warning desapareció.
+4. Quedaba un "Hydration failed" del `MetadataWrapper`/`Suspense` — bug de la versión **canary** de Next (`16.4.0-canary.13`), no del código.
+
+**Decisión:** **bajar Next.js a la versión estable `16.3.4`** (estaba en canary), que elimina el bug de dev.
+
+**Archivos afectados:** `app/globals.css`, `app/layout.tsx`, `components/Navbar.tsx`, `components/ThemeToggle.tsx` (nuevo), `components/ThemeInit.tsx` (nuevo, reemplaza y elimina `ThemeProvider.tsx`), `package.json`.
+
+**Pruebas realizadas:** `npm install` (Next 16.3.4, 0 vulnerabilidades), `npm run build` (OK), `npm test` (22/22), servidor dev responde 200 sin error de hydration en el terminal.
+
+**Resultado:** modo claro/oscuro implementado con toggle persistente, sin flash y sin warnings de script. Next en versión estable.
+
+**Pendientes:**
+- Confirmar visualmente en el navegador que el error de dev del `MetadataWrapper` ya no aparece y que el toggle se ve bien en las 4 pantallas.
+- Alinear `@supabase/supabase-js` con Node ≥22 (aviso) en una iteración futura.
+
+**Siguiente paso:** QA visual en producción (dashboard, movimientos, categorías, login) del modo claro.
+
+---
+
 ## 2026-09-02 — Iteración 4: Fecha de fin para gastos fijos (QA)
 
 **Objetivo:** validar en producción la nueva funcionalidad de fecha de fin de gastos fijos.

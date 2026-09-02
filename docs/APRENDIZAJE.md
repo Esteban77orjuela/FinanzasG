@@ -187,6 +187,29 @@ Usuario (celular) → PWA en el navegador → Next.js la sirve → Supabase guar
 5. La app recarga datos → `getTransactionsForMonth` calcula a qué meses aplica.
 6. El dashboard muestra el resumen recalculado (`calculateSummary`).
 
+## 3.2 Modo claro y oscuro
+
+**QUÉ:** la interfaz tiene dos temas (oscuro por defecto y claro) con un toggle (sol/luna) en la navbar.
+
+**PARA QUÉ:** que el usuario elija el tema según su gusto o ambiente; se recuerda en su dispositivo.
+
+**POR QUÉ:** el roadmap lo preveía y es estándar en apps modernas. Un sistema de diseño con **variables CSS** en `:root` hace trivial cambiar el tema: basta redefinir las variables por bloque.
+
+**CÓMO:**
+- los colores son variables (`--bg-card`, `--text-primary`, ...) definidas en `:root[data-theme='dark']` y `:root[data-theme='light']`; el selector `[data-theme]` del `<html>` decide cuál gana.
+- un `<script>` inicial lee `localStorage` (o `prefers-color-scheme` al primer uso) y pone `data-theme` en `<html>` **antes** de hidratar → sin parpadeo.
+- el toggle guarda la elección en `localStorage`.
+
+**DÓNDE:** `app/globals.css` (variables por tema), `components/ThemeInit.tsx` (script inicial), `components/ThemeToggle.tsx` (botón), `app/layout.tsx` (integración).
+
+**CÓMO SE CONECTA:** el `<html data-theme="...">` decide qué bloque de variables aplica → todos los componentes que usan `var(--...)` se re-colorean solos (no hace falta tocar cada componente).
+
+**QUÉ PASA SI NO EXISTIERA:** interfaz fija en un solo tema, sin personalización.
+
+**TRAMPA (React 19/Next 16):** React 19 avisa ("Encountered a script tag") por cualquier `<script>` dentro del árbol de React, incluso con `next/script`. La solución correcta es inyectarlo **fuera del árbol** con `useServerInsertedHTML`. Este error es un falso positivo (el script sí funciona en SSR) y afecta también a librerías oficiales como `next-themes`.
+
+**REGLA:** *"El tema es un `data-theme` en el `<html>`; los componentes solo leen variables."*
+
 ## 5. Reglas de oro para recordar
 
 | Regla | Frase |
@@ -194,6 +217,8 @@ Usuario (celular) → PWA en el navegador → Next.js la sirve → Supabase guar
 | La seguridad no se decide en el frontend | "El frontend miente; la base manda." |
 | Fijo vs esporádico | "Fijo se repite, esporádico es de una noche." |
 | Fecha de fin de un fijo | "`end_date` vacío = para siempre; puesto = hasta ese mes." |
+| Tema de la interfaz | "`data-theme` en el `<html>`, componentes solo leen variables." |
+| Scripts en React 19 | "Scripts van fuera del árbol (`useServerInsertedHTML`)." |
 | YAGNI | "No construyas lo que la idea general no pidió." |
 | Proporcionalidad | "Tan simple como sea posible, tan robusto como sea necesario." |
 | Evidencia antes que afirmar | "No digo que funciona hasta que lo pruebo." |

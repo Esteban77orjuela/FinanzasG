@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
+import ThemeInit from '@/components/ThemeInit'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -31,7 +32,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-
+      <head>
+        <ThemeInit />
+      </head>
       <body suppressHydrationWarning>
         {children}
         <ServiceWorkerRegister />

@@ -31,6 +31,32 @@
   --color-balance-positive: #10b981;
   --color-balance-negative: #f43f5e;
 
+  /* Radios */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Tipografía */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Outfit', -apple-system, sans-serif;
+
+  /* Transiciones */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Espaciado */
+  --nav-height: 64px;
+  --container-max: 900px;
+}
+
+/* ===== TEMA OSCURO (por defecto) ===== */
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
   /* Fondo oscuro - Azul marino muy oscuro */
   --bg-base: #050a18;
   --bg-surface: #0a1628;
@@ -39,6 +65,8 @@
   --bg-overlay: rgba(10, 22, 40, 0.95);
   --bg-glass: rgba(15, 31, 61, 0.6);
   --bg-glass-hover: rgba(22, 41, 72, 0.8);
+  --bg-input: rgba(255, 255, 255, 0.04);
+  --skeleton-shimmer: rgba(255, 255, 255, 0.06);
 
   /* Bordes */
   --border-subtle: rgba(255, 255, 255, 0.06);
@@ -68,26 +96,51 @@
   --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
   --shadow-primary: 0 4px 20px rgba(16, 185, 129, 0.25);
   --shadow-accent: 0 4px 20px rgba(139, 92, 246, 0.25);
+}
 
-  /* Radios */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-full: 9999px;
+/* ===== TEMA CLARO ===== */
+:root[data-theme='light'] {
+  color-scheme: light;
 
-  /* Tipografía */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-display: 'Outfit', -apple-system, sans-serif;
+  /* Fondo claro */
+  --bg-base: #f4f6fb;
+  --bg-surface: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #eef1f8;
+  --bg-overlay: rgba(255, 255, 255, 0.97);
+  --bg-glass: rgba(255, 255, 255, 0.7);
+  --bg-glass-hover: rgba(255, 255, 255, 0.9);
+  --bg-input: rgba(15, 23, 42, 0.04);
+  --skeleton-shimmer: rgba(15, 23, 42, 0.08);
 
-  /* Transiciones */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* Bordes */
+  --border-subtle: rgba(15, 23, 42, 0.06);
+  --border-normal: rgba(15, 23, 42, 0.12);
+  --border-primary: rgba(16, 185, 129, 0.4);
+  --border-accent: rgba(139, 92, 246, 0.35);
 
-  /* Espaciado */
-  --nav-height: 64px;
-  --container-max: 900px;
+  /* Texto */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-on-primary: #ffffff;
+
+  /* Gradientes */
+  --gradient-primary: linear-gradient(135deg, #059669 0%, #0891b2 100%);
+  --gradient-accent: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+  --gradient-income: linear-gradient(135deg, #10b981 0%, #0891b2 100%);
+  --gradient-expense: linear-gradient(135deg, #f43f5e 0%, #f97316 100%);
+  --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  --gradient-bg: radial-gradient(ellipse at 20% 50%, rgba(16, 185, 129, 0.06) 0%, transparent 50%),
+                 radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+                 #f4f6fb;
+
+  /* Sombras */
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 4px 20px rgba(15, 23, 42, 0.1);
+  --shadow-lg: 0 8px 40px rgba(15, 23, 42, 0.12);
+  --shadow-primary: 0 4px 20px rgba(16, 185, 129, 0.2);
+  --shadow-accent: 0 4px 20px rgba(139, 92, 246, 0.2);
 }
 
 /* =============================================
@@ -674,7 +727,7 @@ a:hover { color: var(--color-primary-500); }
 .form-textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-input);
   border: 1px solid var(--border-normal);
   border-radius: var(--radius-md);
   color: var(--text-primary);
@@ -715,7 +768,7 @@ a:hover { color: var(--color-primary-500); }
   align-items: center;
   justify-content: space-between;
   padding: 0.875rem 1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-input);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
 }
@@ -1114,7 +1167,7 @@ a:hover { color: var(--color-primary-500); }
   background: linear-gradient(
     90deg,
     var(--bg-card) 25%,
-    rgba(255, 255, 255, 0.06) 50%,
+    var(--skeleton-shimmer) 50%,
     var(--bg-card) 75%
   );
   background-size: 200% 100%;

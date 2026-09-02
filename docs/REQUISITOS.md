@@ -17,6 +17,7 @@
 | RF-10 | El usuario puede **filtrar** movimientos por tipo (todos / ingresos / gastos). | Implementado |
 | RF-11 | La aplicación es **instalable** como PWA en Android e iOS. | Implementado |
 | RF-12 | Las rutas privadas **exigen sesión activa**; las de auth redirigen a usuarios logueados. | Implementado |
+| RF-13 | La interfaz ofrece **modo claro y oscuro**, con toggle que recuerda la preferencia en el dispositivo. | Implementado |
 
 ## Requisitos No Funcionales (RNF)
 
