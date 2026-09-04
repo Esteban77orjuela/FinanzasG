@@ -20,7 +20,7 @@ export default function TransactionList({
   onEdit,
   onDeleted,
 }: TransactionListProps) {
-  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [popoverId, setPopoverId] = useState<string | null>(null)
 
   const filtered = transactions.filter((t) =>
     filter === 'all' ? true : t.type === filter
@@ -80,9 +80,12 @@ export default function TransactionList({
             <div className="transaction-item__info">
               <button
                 type="button"
-                className={`transaction-item__description ${expandedId === t.id ? 'expanded' : ''}`}
-                onClick={() => setExpandedId(expandedId === t.id ? null : t.id)}
-                title={expandedId === t.id ? 'Ocultar descripción completa' : 'Ver descripción completa'}
+                className="transaction-item__description"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setPopoverId(popoverId === t.id ? null : t.id)
+                }}
+                title="Ver descripción completa"
               >
                 {t.description}
               </button>
@@ -139,6 +142,20 @@ export default function TransactionList({
                 </svg>
               </button>
             </div>
+
+            {popoverId === t.id && (
+              <div className="transaction-item__popover" onClick={(e) => e.stopPropagation()}>
+                <button
+                  type="button"
+                  className="transaction-item__popover-close"
+                  onClick={() => setPopoverId(null)}
+                  aria-label="Cerrar"
+                >
+                  ✕
+                </button>
+                <span className="transaction-item__popover-text">{t.description}</span>
+              </div>
+            )}
           </div>
         )
       })}
