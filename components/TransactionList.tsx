@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import type { Category, Transaction } from '@/lib/types/database'
 import { formatCurrency } from '@/lib/utils'
 import { supabase } from '@/lib/supabase/client'
@@ -19,6 +20,8 @@ export default function TransactionList({
   onEdit,
   onDeleted,
 }: TransactionListProps) {
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+
   const filtered = transactions.filter((t) =>
     filter === 'all' ? true : t.type === filter
   )
@@ -75,7 +78,14 @@ export default function TransactionList({
 
             {/* Info */}
             <div className="transaction-item__info">
-              <div className="transaction-item__description">{t.description}</div>
+              <button
+                type="button"
+                className={`transaction-item__description ${expandedId === t.id ? 'expanded' : ''}`}
+                onClick={() => setExpandedId(expandedId === t.id ? null : t.id)}
+                title={expandedId === t.id ? 'Ocultar descripción completa' : 'Ver descripción completa'}
+              >
+                {t.description}
+              </button>
               <div className="transaction-item__meta">
                 {cat && (
                   <span className="transaction-item__category">
