@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
+import DevErrorFilter from '@/components/DevErrorFilter'
 import ThemeInit from '@/components/ThemeInit'
 import './globals.css'
 
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         {children}
         <ServiceWorkerRegister />
+        <DevErrorFilter />
       </body>
     </html>
   )
