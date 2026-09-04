@@ -487,9 +487,9 @@ a:hover { color: var(--color-primary-500); }
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  height: 40vh;
+  height: 30vh;
   min-height: 12rem;
-  max-height: 32rem;
+  max-height: 24rem;
   overflow-y: auto;
   overscroll-behavior: contain;
   border: 1px solid var(--border-normal);
@@ -536,7 +536,10 @@ a:hover { color: var(--color-primary-500); }
   font-size: 0.9375rem;
   font-weight: 500;
   color: var(--text-primary);
-  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .transaction-item__meta {
