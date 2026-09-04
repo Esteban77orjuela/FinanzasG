@@ -20,7 +20,7 @@ export default function TransactionList({
   onEdit,
   onDeleted,
 }: TransactionListProps) {
-  const [popoverId, setPopoverId] = useState<string | null>(null)
+  const [modalTx, setModalTx] = useState<Transaction | null>(null)
 
   const filtered = transactions.filter((t) =>
     filter === 'all' ? true : t.type === filter
@@ -58,6 +58,7 @@ export default function TransactionList({
   }
 
   return (
+    <>
     <div className="transaction-list animate-fade-in">
       {filtered.map((t) => {
         const cat = getCategoryForTransaction(t)
@@ -81,10 +82,7 @@ export default function TransactionList({
               <button
                 type="button"
                 className="transaction-item__description"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setPopoverId(popoverId === t.id ? null : t.id)
-                }}
+                onClick={() => setModalTx(t)}
                 title="Ver descripción completa"
               >
                 {t.description}
@@ -142,23 +140,44 @@ export default function TransactionList({
                 </svg>
               </button>
             </div>
-
-            {popoverId === t.id && (
-              <div className="transaction-item__popover" onClick={(e) => e.stopPropagation()}>
-                <button
-                  type="button"
-                  className="transaction-item__popover-close"
-                  onClick={() => setPopoverId(null)}
-                  aria-label="Cerrar"
-                >
-                  ✕
-                </button>
-                <span className="transaction-item__popover-text">{t.description}</span>
-              </div>
-            )}
           </div>
         )
       })}
     </div>
+
+    {modalTx && (
+      <div className="transaction-modal-overlay" onClick={() => setModalTx(null)}>
+        <div
+          className="transaction-modal"
+          onClick={(e) => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+        >
+          <button
+            type="button"
+            className="transaction-modal__close"
+            onClick={() => setModalTx(null)}
+            aria-label="Cerrar"
+          >
+            ✕
+          </button>
+          <p className="transaction-modal__label">Descripción completa</p>
+          <h3 className="transaction-modal__title">{modalTx.description}</h3>
+          <div className="transaction-modal__meta">
+            <span className={`transaction-modal__amount transaction-modal__amount--${modalTx.type}`}>
+              {modalTx.type === 'income' ? '+' : '-'}{formatCurrency(modalTx.amount)}
+            </span>
+          </div>
+          <button
+            type="button"
+            className="btn btn--ghost btn--sm transaction-modal__ok"
+            onClick={() => setModalTx(null)}
+          >
+            Entendido
+          </button>
+        </div>
+      </div>
+    )}
+    </>
   )
 }

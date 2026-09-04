@@ -550,41 +550,39 @@ a:hover { color: var(--color-primary-500); }
   text-overflow: ellipsis;
 }
 
-.transaction-item__popover {
-  position: absolute;
-  top: 100%;
-  left: 1rem;
-  right: 1rem;
-  margin-top: 0.375rem;
-  z-index: 30;
+.transaction-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 300;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1rem;
+  padding: 1.5rem;
+  animation: fadeIn var(--transition-normal) ease;
+}
+
+.transaction-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
   background: var(--bg-card);
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem 1.5rem;
   box-shadow: var(--shadow-lg);
-}
-
-.transaction-item__popover-text {
-  flex: 1;
-  min-width: 0;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  animation: scaleIn var(--transition-normal) cubic-bezier(0.32, 0.72, 0, 1);
   text-align: center;
-  white-space: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  line-height: 1.35;
 }
 
-.transaction-item__popover-close {
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+.transaction-modal__close {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  width: 28px;
+  height: 28px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -593,13 +591,56 @@ a:hover { color: var(--color-primary-500); }
   background: var(--bg-glass-hover);
   color: var(--text-secondary);
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   transition: all var(--transition-fast);
 }
 
-.transaction-item__popover-close:hover {
+.transaction-modal__close:hover {
   background: var(--color-expense-light);
   color: var(--color-expense);
+}
+
+.transaction-modal__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.transaction-modal__title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.transaction-modal__amount {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  padding: 0.25rem 0.875rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 1.25rem;
+}
+
+.transaction-modal__amount--income {
+  color: var(--color-income);
+  background: var(--color-income-light);
+}
+
+.transaction-modal__amount--expense {
+  color: var(--color-expense);
+  background: var(--color-expense-light);
+}
+
+.transaction-modal__ok {
+  width: 100%;
 }
 
 .transaction-item__meta {
