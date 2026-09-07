@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Category, Transaction } from '@/lib/types/database'
 import { formatCurrency } from '@/lib/utils'
 import { supabase } from '@/lib/supabase/client'
@@ -11,6 +11,34 @@ interface TransactionListProps {
   filter: 'all' | 'income' | 'expense'
   onEdit: (t: Transaction) => void
   onDeleted: () => void
+}
+
+function TruncatedDescription({ text }: { text: string }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const [truncated, setTruncated] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const check = () => setTruncated(el.scrollWidth > el.clientWidth)
+    check()
+    const ro = new ResizeObserver(check)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [text])
+
+  return (
+    <>
+      <span ref={ref} className="transaction-item__description-text">
+        {text}
+      </span>
+      {truncated && (
+        <span className="transaction-item__description-affordance" aria-hidden="true">
+          ⌄
+        </span>
+      )}
+    </>
+  )
 }
 
 export default function TransactionList({
@@ -64,7 +92,11 @@ export default function TransactionList({
         const cat = getCategoryForTransaction(t)
         const isIncome = t.type === 'income'
         return (
-          <div key={t.id} className="transaction-item">
+          <div
+            key={t.id}
+            className="transaction-item"
+            onClick={() => setModalTx(t)}
+          >
             {/* Ícono */}
             <div
               className="transaction-item__icon"
@@ -82,10 +114,13 @@ export default function TransactionList({
               <button
                 type="button"
                 className="transaction-item__description"
-                onClick={() => setModalTx(t)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setModalTx(t)
+                }}
                 title="Ver descripción completa"
               >
-                {t.description}
+                <TruncatedDescription text={t.description} />
               </button>
               <div className="transaction-item__meta">
                 {cat && (
@@ -116,7 +151,10 @@ export default function TransactionList({
             <div className="transaction-item__actions">
               <button
                 className="btn btn--ghost btn--icon btn--sm"
-                onClick={() => onEdit(t)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onEdit(t)
+                }}
                 title="Editar"
                 aria-label="Editar movimiento"
               >
@@ -127,7 +165,10 @@ export default function TransactionList({
               </button>
               <button
                 className="btn btn--danger btn--icon btn--sm"
-                onClick={() => handleDelete(t.id, t.is_fixed)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleDelete(t.id, t.is_fixed)
+                }}
                 title="Eliminar"
                 aria-label="Eliminar movimiento"
               >
