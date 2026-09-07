@@ -46,6 +46,22 @@ export default function SavingsGoal({ income, balance }: SavingsGoalProps) {
   const progress = Math.max(0, Math.min(rate / MAX_GOAL, 1))
   const status = getStatus(rate)
 
+  const minAmount = income * (MIN_GOAL / 100)
+  const maxAmount = income * (MAX_GOAL / 100)
+
+  let hint: string | null = null
+  if (income <= 0) {
+    hint = 'Registra ingresos este mes para calcular tu meta.'
+  } else if (balance >= maxAmount) {
+    hint = '¡Alcanzaste la meta fabulosa! Guardaste el 30% o más de tus ingresos.'
+  } else if (balance >= minAmount) {
+    hint = `¡Meta mínima lograda! Te faltan ${formatCurrency(maxAmount - balance)} para ser fabuloso.`
+  } else if (balance > 0) {
+    hint = `Te faltan ${formatCurrency(minAmount - balance)} para tu meta mínima.`
+  } else {
+    hint = 'Aún no guardas dinero este mes.'
+  }
+
   const size = 84
   const stroke = 8
   const r = (size - stroke) / 2
@@ -106,13 +122,35 @@ export default function SavingsGoal({ income, balance }: SavingsGoalProps) {
         <span className={`savings-goal__status savings-goal__status--${status.tone}`}>
           {status.label}
         </span>
-        <p className="savings-goal__context">
-          Guardado <strong>{formatCurrency(balance)}</strong>
-          {' · '}Ingresos {formatCurrency(income)}
-        </p>
-        <p className="savings-goal__legend">
-          Meta mínima {MIN_GOAL}% · Fabuloso {MAX_GOAL}%
-        </p>
+
+        {income > 0 && (
+          <p className="savings-goal__goal-name">
+            Destina el {MIN_GOAL}–{MAX_GOAL}% de tus ingresos a tu ahorro mensual.
+          </p>
+        )}
+
+        {income > 0 && (
+          <div className="savings-goal__goals">
+            <div className={`savings-goal__goal ${balance >= minAmount ? 'savings-goal__goal--done' : ''}`}>
+              <span className="savings-goal__dot savings-goal__dot--min" />
+              <span>Meta mínima</span>
+              <span className="savings-goal__goal-pct">{MIN_GOAL}%</span>
+              <strong>{formatCurrency(minAmount)}</strong>
+            </div>
+            <div className={`savings-goal__goal ${balance >= maxAmount ? 'savings-goal__goal--done' : ''}`}>
+              <span className="savings-goal__dot savings-goal__dot--max" />
+              <span>Fabuloso</span>
+              <span className="savings-goal__goal-pct">{MAX_GOAL}%</span>
+              <strong>{formatCurrency(maxAmount)}</strong>
+            </div>
+          </div>
+        )}
+
+        {hint && (
+          <p className={`savings-goal__hint savings-goal__hint--${status.tone}`}>
+            {hint}
+          </p>
+        )}
       </div>
     </div>
   )
