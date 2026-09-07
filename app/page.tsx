@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import SummaryCards from '@/components/SummaryCards'
+import SavingsGoal from '@/components/SavingsGoal'
 import MonthPicker from '@/components/MonthPicker'
 import TransactionList from '@/components/TransactionList'
 import TransactionForm from '@/components/TransactionForm'
@@ -73,15 +74,11 @@ export default function DashboardPage() {
       <main className="page-content">
         <div className="container">
           {/* Header */}
-          <div className="page-header">
-            <div>
-              <h1 style={{ marginBottom: '0.25rem' }}>Mis Finanzas</h1>
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                Resumen mensual
-              </p>
-            </div>
+          <header className="page-header page-header--hero">
+            <h1>Mis Finanzas</h1>
+            <p className="page-header__subtitle">Resumen mensual</p>
             <MonthPicker year={year} month={month} onChange={handleMonthChange} />
-          </div>
+          </header>
 
           {/* Tarjetas de resumen */}
           {loading ? (
@@ -91,7 +88,10 @@ export default function DashboardPage() {
               ))}
             </div>
           ) : (
-            <SummaryCards income={income} expense={expense} balance={balance} />
+            <>
+              <SummaryCards income={income} expense={expense} balance={balance} />
+              <SavingsGoal income={income} balance={balance} />
+            </>
           )}
 
           {/* Lista de movimientos */}

@@ -439,6 +439,88 @@ a:hover { color: var(--color-primary-500); }
 }
 
 /* =============================================
+   META DE AHORRO
+   ============================================= */
+.savings-goal {
+  display: flex;
+  align-items: center;
+  gap: 1.125rem;
+  margin-top: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--gradient-card);
+  border: 1px solid var(--border-normal);
+  border-radius: var(--radius-lg);
+}
+
+.savings-goal__ring {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  flex-shrink: 0;
+}
+
+.savings-goal__track {
+  stroke: var(--bg-card-hover);
+  transition: stroke var(--transition-normal);
+}
+
+.savings-goal__fill {
+  transform: rotate(-90deg);
+  transform-origin: center;
+}
+
+.savings-goal__mark {
+  stroke: var(--text-muted);
+  stroke-linecap: round;
+}
+
+.savings-goal__percentage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.savings-goal__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.savings-goal__status {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.savings-goal__status--excellent { color: var(--color-income); }
+.savings-goal__status--good { color: var(--color-primary-400); }
+.savings-goal__status--low { color: var(--color-expense); }
+.savings-goal__status--none { color: var(--text-muted); }
+
+.savings-goal__context {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.savings-goal__context strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.savings-goal__legend {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  margin-top: 0.125rem;
+}
+
+/* =============================================
    SELECTOR DE MES
    ============================================= */
 .month-selector {
@@ -1256,6 +1338,30 @@ a:hover { color: var(--color-primary-500); }
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
   gap: 0.75rem;
+}
+
+.page-header--hero {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.375rem;
+}
+
+.page-header--hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4.5vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.page-header__subtitle {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.page-header__subtitle::first-letter {
+  text-transform: capitalize;
 }
 
 .section-title {
