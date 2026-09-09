@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import SummaryCards from '@/components/SummaryCards'
 import SavingsGoal from '@/components/SavingsGoal'
+import PaidSummary from '@/components/PaidSummary'
 import MonthPicker from '@/components/MonthPicker'
 import TransactionList from '@/components/TransactionList'
 import TransactionForm from '@/components/TransactionForm'
@@ -25,6 +26,10 @@ export default function DashboardPage() {
 
   const loadData = useCallback(async () => {
     setLoading(true)
+    await fetchData()
+  }, [])
+
+  const fetchData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
@@ -47,6 +52,26 @@ export default function DashboardPage() {
   }, [])
 
   useEffect(() => { loadData() }, [loadData])
+
+  // Sincronización en vivo: si la pareja hace cambios desde otro dispositivo,
+  // esta vista se actualiza sola sin recargar ni parpadear.
+  useEffect(() => {
+    const channel = supabase
+      .channel('transactions-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'transactions' },
+        () => fetchData()
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'categories' },
+        () => fetchData()
+      )
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }, [fetchData])
 
   const monthTransactions = getTransactionsForMonth(allTransactions, year, month)
   const { income, expense, balance } = calculateSummary(monthTransactions)
@@ -116,6 +141,10 @@ export default function DashboardPage() {
                 ))}
               </div>
             </div>
+
+            {filter !== 'income' && (
+              <PaidSummary transactions={monthTransactions} />
+            )}
 
             {loading ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

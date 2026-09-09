@@ -9,6 +9,7 @@ import {
   nextMonth,
   parseMonthKey,
   previousMonth,
+  summarizeExpenses,
 } from '@/lib/utils'
 
 function makeTransaction(overrides: Partial<Transaction> = {}): Transaction {
@@ -147,6 +148,45 @@ describe('calculateSummary — resumen financiero', () => {
       makeTransaction({ type: 'expense', amount: 99999 }),
     ])
     expect(summary.balance).toBe(summary.income - summary.expense)
+  })
+})
+
+describe('summarizeExpenses — estado pagado/pendiente', () => {
+  it('separa pagados y pendientes e ignora ingresos', () => {
+    const transactions = [
+      makeTransaction({ type: 'expense', amount: 500000, is_paid: true }),
+      makeTransaction({ type: 'expense', amount: 200000, is_paid: false }),
+      makeTransaction({ type: 'expense', amount: 100000, is_paid: false }),
+      makeTransaction({ type: 'income', amount: 999999, is_paid: true }),
+    ]
+    const summary = summarizeExpenses(transactions)
+    expect(summary.total).toBe(800000)
+    expect(summary.paid).toBe(500000)
+    expect(summary.pending).toBe(300000)
+    expect(summary.count).toBe(3)
+    expect(summary.pendingCount).toBe(2)
+  })
+
+  it('con todo pagado devuelve pendientes en cero', () => {
+    const transactions = [
+      makeTransaction({ type: 'expense', amount: 500000, is_paid: true }),
+      makeTransaction({ type: 'expense', amount: 250000, is_paid: true }),
+    ]
+    const summary = summarizeExpenses(transactions)
+    expect(summary.pending).toBe(0)
+    expect(summary.pendingCount).toBe(0)
+    expect(summary.total).toBe(750000)
+  })
+
+  it('sin gastos devuelve todo en cero', () => {
+    const summary = summarizeExpenses([])
+    expect(summary).toEqual({
+      total: 0,
+      paid: 0,
+      pending: 0,
+      count: 0,
+      pendingCount: 0,
+    })
   })
 })
 

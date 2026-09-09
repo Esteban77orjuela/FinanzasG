@@ -100,6 +100,29 @@ export function calculateSummary(transactions: Transaction[]) {
 }
 
 /**
+ * Resume el estado de pago de los gastos de un mes.
+ */
+export function summarizeExpenses(transactions: Transaction[]) {
+  const expenses = transactions.filter((t) => t.type === 'expense')
+
+  const total = expenses.reduce((sum, t) => sum + t.amount, 0)
+  const paid = expenses
+    .filter((t) => t.is_paid)
+    .reduce((sum, t) => sum + t.amount, 0)
+  const pending = expenses
+    .filter((t) => !t.is_paid)
+    .reduce((sum, t) => sum + t.amount, 0)
+
+  return {
+    total,
+    paid,
+    pending,
+    count: expenses.length,
+    pendingCount: expenses.filter((t) => !t.is_paid).length,
+  }
+}
+
+/**
  * Navegar al mes anterior
  */
 export function previousMonth(year: number, month: number): { year: number; month: number } {

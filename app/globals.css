@@ -275,7 +275,6 @@ a:hover { color: var(--color-primary-500); }
   bottom: 0;
   left: 0;
   right: 0;
-  height: 64px;
   background: var(--bg-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -283,23 +282,25 @@ a:hover { color: var(--color-primary-500); }
   display: flex;
   align-items: center;
   justify-content: space-around;
+  padding: 0.375rem 0.5rem calc(0.375rem + env(safe-area-inset-bottom, 0px));
   z-index: 100;
-  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .bottom-nav__item {
   display: flex;
+  flex: 1;
+  min-width: 0;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 0.25rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.25rem;
   border-radius: var(--radius-md);
   color: var(--text-muted);
-  font-size: 0.6875rem;
+  font-size: 0.7rem;
   font-weight: 500;
   text-decoration: none;
   transition: all var(--transition-fast);
-  min-width: 60px;
 }
 
 .bottom-nav__item svg {
@@ -314,6 +315,7 @@ a:hover { color: var(--color-primary-500); }
 
 .bottom-nav__item.active {
   color: var(--color-primary-400);
+  background: rgba(16, 185, 129, 0.12);
 }
 
 .bottom-nav__item.active svg {
@@ -986,7 +988,7 @@ a:hover { color: var(--color-primary-500); }
 /* FAB (Floating Action Button) */
 .fab {
   position: fixed;
-  bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 1.25rem);
+  bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 1.25rem);
   right: 1.25rem;
   width: 56px;
   height: 56px;
@@ -1319,6 +1321,49 @@ a:hover { color: var(--color-primary-500); }
 .filter-tab:hover:not(.active) {
   color: var(--text-secondary);
 }
+
+/* =============================================
+   RESUMEN PAGADO / PENDIENTE
+   ============================================= */
+.paid-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.375rem;
+  padding: 0.625rem 0.875rem;
+  margin-bottom: 0.875rem;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.paid-summary__stats {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  flex-wrap: wrap;
+}
+
+.paid-summary__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.paid-summary__stat--paid { color: var(--color-income); }
+.paid-summary__stat--pending { color: var(--color-accent-400); }
+
+.paid-summary__message {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.paid-summary__message--ok { color: var(--color-income); }
+.paid-summary__message--warn { color: var(--color-expense); }
 
 /* =============================================
    PÁGINAS DE AUTH

@@ -95,6 +95,30 @@ CREATE POLICY "Users can delete own transactions"
   USING (auth.uid() = user_id);
 
 -- ========================
+-- REALTIME (V3)
+-- Sincronización en vivo para uso simultáneo (misma cuenta / pareja):
+-- cuando un dispositivo inserta, actualiza o borra, los demás se
+-- enteran al instante. Respeta RLS: cada sesión solo recibe sus filas.
+-- Este bloque es idempotente: se puede ejecutar varias veces sin error.
+-- ========================
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables
+    WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'transactions'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.transactions;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables
+    WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'categories'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.categories;
+  END IF;
+END $$;
+
+-- ========================
 -- CATEGORÍAS POR DEFECTO
 -- (No aplica RLS ya que no tienen user_id — esto es solo un ejemplo)
 -- Las categorías se crean por usuario desde la app
