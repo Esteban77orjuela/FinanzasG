@@ -33,10 +33,19 @@ CREATE TABLE IF NOT EXISTS public.transactions (
 );
 
 -- ========================
+-- PAGO DE GASTOS (V2)
+-- Marca cada gasto como pagado o pendiente
+-- El default TRUE deja los movimientos existentes como pagados
+-- ========================
+ALTER TABLE public.transactions
+  ADD COLUMN IF NOT EXISTS is_paid BOOLEAN NOT NULL DEFAULT TRUE;
+
+-- ========================
 -- ÍNDICES
 -- ========================
 CREATE INDEX IF NOT EXISTS idx_transactions_user_id ON public.transactions(user_id);
 CREATE INDEX IF NOT EXISTS idx_transactions_is_fixed ON public.transactions(is_fixed);
+CREATE INDEX IF NOT EXISTS idx_transactions_is_paid ON public.transactions(is_paid);
 CREATE INDEX IF NOT EXISTS idx_transactions_start_date ON public.transactions(start_date);
 CREATE INDEX IF NOT EXISTS idx_categories_user_id ON public.categories(user_id);
 

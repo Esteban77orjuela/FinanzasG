@@ -62,6 +62,12 @@ export default function DashboardPage() {
     setShowForm(true)
   }
 
+  function handleTogglePaid(id: string, isPaid: boolean) {
+    setAllTransactions((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, is_paid: isPaid } : t))
+    )
+  }
+
   function handleCloseForm() {
     setShowForm(false)
     setEditTransaction(null)
@@ -124,6 +130,7 @@ export default function DashboardPage() {
                 filter={filter}
                 onEdit={handleEdit}
                 onDeleted={loadData}
+                onTogglePaid={handleTogglePaid}
               />
             )}
           </div>

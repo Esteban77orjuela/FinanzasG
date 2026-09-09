@@ -47,6 +47,7 @@ export interface Database {
           amount: number
           type: 'income' | 'expense'
           is_fixed: boolean
+          is_paid: boolean
           start_date: string
           end_date: string | null
           created_at: string
@@ -59,6 +60,7 @@ export interface Database {
           amount: number
           type: 'income' | 'expense'
           is_fixed?: boolean
+          is_paid?: boolean
           start_date: string
           end_date?: string | null
           created_at?: string
@@ -71,6 +73,7 @@ export interface Database {
           amount?: number
           type?: 'income' | 'expense'
           is_fixed?: boolean
+          is_paid?: boolean
           start_date?: string
           end_date?: string | null
           created_at?: string

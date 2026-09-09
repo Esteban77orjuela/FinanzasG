@@ -20,6 +20,7 @@ function makeTransaction(overrides: Partial<Transaction> = {}): Transaction {
     amount: 100000,
     type: 'expense',
     is_fixed: false,
+    is_paid: true,
     start_date: '2026-01-15',
     end_date: null,
     created_at: '2026-01-01T00:00:00Z',

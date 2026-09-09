@@ -11,6 +11,7 @@ interface TransactionListProps {
   filter: 'all' | 'income' | 'expense'
   onEdit: (t: Transaction) => void
   onDeleted: () => void
+  onTogglePaid: (id: string, isPaid: boolean) => void
 }
 
 function TruncatedDescription({ text }: { text: string }) {
@@ -47,6 +48,7 @@ export default function TransactionList({
   filter,
   onEdit,
   onDeleted,
+  onTogglePaid,
 }: TransactionListProps) {
   const [modalTx, setModalTx] = useState<Transaction | null>(null)
 
@@ -63,6 +65,21 @@ export default function TransactionList({
     const { error } = await supabase.from('transactions').delete().eq('id', id)
     if (!error) onDeleted()
     else alert('Error al eliminar: ' + error.message)
+  }
+
+  async function handleTogglePaid(t: Transaction) {
+    const next = !t.is_paid
+    onTogglePaid(t.id, next)
+    // @ts-ignore — Supabase types mismatch with update payloads
+    const { error } = await supabase
+      .from('transactions')
+      // @ts-ignore
+      .update({ is_paid: next })
+      .eq('id', t.id)
+    if (error) {
+      onTogglePaid(t.id, !next)
+      alert('Error al actualizar el pago: ' + error.message)
+    }
   }
 
   function getCategoryForTransaction(t: Transaction) {
@@ -94,7 +111,9 @@ export default function TransactionList({
         return (
           <div
             key={t.id}
-            className="transaction-item"
+            className={`transaction-item ${
+              !isIncome && !t.is_paid ? 'transaction-item--pending' : ''
+            }`}
             onClick={() => setModalTx(t)}
           >
             {/* Ícono */}
@@ -137,49 +156,81 @@ export default function TransactionList({
                     🔁 Fijo{t.end_date ? ' · fin' : ''}
                   </span>
                 )}
+                {!isIncome && !t.is_paid && (
+                  <span className="transaction-item__pending-badge">⏳ Pendiente</span>
+                )}
               </div>
             </div>
 
-            {/* Monto */}
-            <div
-              className={`transaction-item__amount transaction-item__amount--${t.type}`}
-            >
-              {isIncome ? '+' : '-'}{formatCurrency(t.amount)}
-            </div>
+            {/* Columna derecha: monto + controles */}
+            <div className="transaction-item__right">
+              {/* Monto */}
+              <div
+                className={`transaction-item__amount transaction-item__amount--${t.type}`}
+              >
+                {isIncome ? '+' : '-'}{formatCurrency(t.amount)}
+              </div>
 
-            {/* Acciones */}
-            <div className="transaction-item__actions">
-              <button
-                className="btn btn--ghost btn--icon btn--sm"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onEdit(t)
-                }}
-                title="Editar"
-                aria-label="Editar movimiento"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                </svg>
-              </button>
-              <button
-                className="btn btn--danger btn--icon btn--sm"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleDelete(t.id, t.is_fixed)
-                }}
-                title="Eliminar"
-                aria-label="Eliminar movimiento"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="3 6 5 6 21 6"/>
-                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                  <path d="M10 11v6"/>
-                  <path d="M14 11v6"/>
-                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                </svg>
-              </button>
+              {/* Controles */}
+              <div className="transaction-item__actions">
+                {!isIncome && (
+                  <button
+                    type="button"
+                    className={`transaction-item__paid-toggle ${
+                      t.is_paid ? 'transaction-item__paid-toggle--paid' : ''
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleTogglePaid(t)
+                    }}
+                    title={t.is_paid ? 'Marcar como pendiente' : 'Marcar como pagado'}
+                    aria-label={t.is_paid ? 'Marcar como pendiente' : 'Marcar como pagado'}
+                    aria-pressed={t.is_paid}
+                  >
+                    {t.is_paid ? (
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    ) : (
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                      </svg>
+                    )}
+                  </button>
+                )}
+                <button
+                  className="btn btn--ghost btn--icon btn--sm"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onEdit(t)
+                  }}
+                  title="Editar"
+                  aria-label="Editar movimiento"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                  </svg>
+                </button>
+                <button
+                  className="btn btn--danger btn--icon btn--sm"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDelete(t.id, t.is_fixed)
+                  }}
+                  title="Eliminar"
+                  aria-label="Eliminar movimiento"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                    <path d="M10 11v6"/>
+                    <path d="M14 11v6"/>
+                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         )
